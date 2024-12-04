@@ -108,3 +108,14 @@ textarea {
 .add-new-button:hover {
     background-color: #45a049;
 }
+
+table tr:nth-child(odd) {
+    background-color: #e5e2e2; /* Light grey */
+}
+table tr:nth-child(even) {
+    background-color: white; /* White */
+}
+
+.highlight-row {
+    background-color: #e7ffd3 !important; /* Ensure this takes priority */
+}

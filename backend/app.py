@@ -539,14 +539,16 @@ def edit_instruction(instruction_id):
     data = request.json
     db = get_mongo()
     collection = db['instruction']
-    collection.update_one(
-        {'_id': ObjectId(instruction_id)},
-        {'$set': {
-            'content': data['content'],
-            'description': data['description'],
-            'last_edit': datetime.utcnow()
-        }}
-    )
+    new_instruction = {
+        'content': data['content'],  # Save content as bytes
+        'description': data['description'],
+        'deployed': True,
+        'has_been_deployed': True,
+        'deploy_time': datetime.utcnow(),  # Initially None
+        'last_edit': datetime.utcnow(),
+    }
+    collection.insert_one(new_instruction)
+    deploy_instruction(new_instruction['_id'])
     return jsonify({'message': 'Instruction updated successfully'})
 
 @app.route('/api/instruction/deploy/<instruction_id>', methods=['POST'])
@@ -556,7 +558,11 @@ def deploy_instruction(instruction_id):
     collection.update_many({'deployed': True}, {'$set': {'deployed': False}})
     collection.update_one(
         {'_id': ObjectId(instruction_id)},
-        {'$set': {'deployed': True}}
+        {'$set': {
+            'deployed': True,
+            'has_been_deployed': True,
+            'deploy_time': datetime.utcnow()
+        }}
     )
     return jsonify({'message': 'Instruction deployed successfully'})
 
@@ -576,6 +582,8 @@ def add_new_instruction():
         'content': data['content'],  # Save content as bytes
         'description': data['description'],
         'deployed': False,
+        'has_been_deployed': False,
+        'deploy_time': None,  # Initially None
         'last_edit': datetime.utcnow(),
     }
     collection.insert_one(new_instruction)
@@ -584,8 +592,19 @@ def add_new_instruction():
 def get_deployed_instruction():
     db = get_mongo()
     collection = db['instruction']
-    instruction = collection.find_one({'deployed': True})
-    return instruction['content']
+    deployed_instructions = collection.find_one({'deployed': True})
+    return deployed_instructions['content']
+
+@app.route('/api/deployed-instructions', methods=['GET'])
+def get_deployed_instructions():
+    db = get_mongo()
+    collection = db['instruction']
+    deployed_instructions = list(collection.find({'has_been_deployed': True}).sort('deploy_time', -1))
+    for instruction in deployed_instructions:
+        instruction['_id'] = str(instruction['_id'])  # Convert ObjectId to string
+        # instruction['content'] = instruction['content'].decode('utf-8')  # Decode bytes to string
+    return jsonify(deployed_instructions)
+
 
 if __name__ == '__main__':
     app.run(port=4999)

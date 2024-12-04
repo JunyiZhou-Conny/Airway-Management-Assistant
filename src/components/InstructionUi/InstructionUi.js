@@ -4,15 +4,30 @@ import './InstructionUi.css';
 const InstructionUi = () => {
     const [instructions, setInstructions] = useState([]);
     const [editInstruction, setEditInstruction] = useState(null);
+    const [deployedInstructions, setDeployedInstructions] = useState([]);
     const [isNew, setIsNew] = useState(false);
 
     // Fetch all instructions
     const fetchInstructions = () => {
+        // Fetch undeployed instructions
         fetch(`${process.env.REACT_APP_BACKEND_URL}/api/instructions`)
             .then((response) => response.json())
-            .then((data) => setInstructions(data))
-            .catch((error) => console.error('Error fetching instructions:', error));
+            .then((data) => {
+                // const undeployed = data.filter((i) => !i.has_been_deployed); // Ensure only undeployed
+                const deployed = data.filter((i) => i.has_been_deployed); // Ensure only deployed
+                deployed.sort((a, b) => new Date(b.deploy_time) - new Date(a.deploy_time)); // Sort by deploy time
+                setDeployedInstructions(deployed);
+                // setInstructions(undeployed);
+            })
+            .catch((error) => console.error('Error fetching undeployed instructions:', error));
+    
+        // // Fetch deployed instructions
+        // fetch(`${process.env.REACT_APP_BACKEND_URL}/api/deployed-instructions`)
+        //     .then((response) => response.json())
+        //     .then((data) => setDeployedInstructions(data))
+        //     .catch((error) => console.error('Error fetching deployed instructions:', error));
     };
+    
 
     useEffect(() => {
         fetchInstructions();
@@ -53,10 +68,11 @@ const InstructionUi = () => {
         })
             .then(() => {
                 alert('Instruction deployed successfully');
-                fetchInstructions(); // Refresh the instructions list
+                fetchInstructions(); // Refresh both deployed and undeployed instructions
             })
             .catch((error) => console.error('Error deploying instruction:', error));
     };
+    
 
     // Delete an instruction
     const handleDelete = (instructionId) => {
@@ -104,9 +120,8 @@ const InstructionUi = () => {
 
     return (
         <div className="instruction-ui">
-            <h1>Instructions</h1>
             <button
-                className="add-new-button"
+                className="add-new-instruction-button"
                 onClick={() => {
                     setEditInstruction({ content: '', description: '' });
                     setIsNew(true);
@@ -114,11 +129,12 @@ const InstructionUi = () => {
             >
                 Add New Instruction
             </button>
-            <h2>Deployed Instruction</h2>
+    
+            <h2>Instructions</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Date</th>
+                        <th>Deploy Time</th>
                         <th>Description</th>
                         <th>Edit</th>
                         <th>Deploy</th>
@@ -126,70 +142,30 @@ const InstructionUi = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {instructions.filter((i) => i.deployed).map((instruction) => (
-                        <tr key={instruction._id}>
-                            <td>{new Date(instruction.last_edit).toLocaleString()}</td>
+                    {deployedInstructions.map((instruction) => (
+                        <tr
+                            key={instruction._id}
+                            className={instruction.deployed === true ? 'highlight-row' : ''}
+                        >
+                            <td>{new Date(instruction.deploy_time).toLocaleString()}</td>
                             <td>{instruction.description}</td>
                             <td>
-                                <button onClick={() => setEditInstruction(instruction)}>
-                                    Edit
-                                </button>
+                                <button onClick={() => setEditInstruction(instruction)}>Edit</button>
                             </td>
                             <td>
-                                <button onClick={() => handleDeploy(instruction._id)}>
-                                    Deploy
-                                </button>
+                                <button onClick={() => handleDeploy(instruction._id)}>Deploy</button>
                             </td>
                             <td>
-                                <button onClick={() => handleDelete(instruction._id)}>
-                                    Delete
-                                </button>
+                                <button onClick={() => handleDelete(instruction._id)}>Delete</button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
-            </table>
 
-            <h2>Undeployed Instructions</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Edit</th>
-                        <th>Deploy</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {instructions
-                        .filter((i) => !i.deployed)
-                        .sort((a, b) => new Date(b.last_edit) - new Date(a.last_edit))
-                        .map((instruction) => (
-                            <tr key={instruction._id}>
-                                <td>{new Date(instruction.last_edit).toLocaleString()}</td>
-                                <td>{instruction.description}</td>
-                                <td>
-                                    <button onClick={() => setEditInstruction(instruction)}>
-                                        Edit
-                                    </button>
-                                </td>
-                                <td>
-                                    <button onClick={() => handleDeploy(instruction._id)}>
-                                        Deploy
-                                    </button>
-                                </td>
-                                <td>
-                                    <button onClick={() => handleDelete(instruction._id)}>
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                </tbody>
             </table>
         </div>
     );
+    
 };
 
 export default InstructionUi;
