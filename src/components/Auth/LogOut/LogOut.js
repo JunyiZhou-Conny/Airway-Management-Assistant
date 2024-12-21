@@ -7,10 +7,10 @@ const LogoutButton = () => {
     const { logout } = useAuth0();
   
     // Specify the URL to redirect to after logging out
-    const logoutUrl = `${'https://d3g1qw60hz7yw7.cloudfront.net/'}/`; // change this route for aws integration
+    const logoutUrl = `${'https://d3g1qw60hz7yw7.cloudfront.net/'}`; // change this route for aws integration
 
     return (
-      <button className='log-out-button' onClick={() => logout({ returnTo: window.location.origin })}>
+      <button className='log-out-button' onClick={() => logout({ returnTo: logoutUrl })}>
         Log Out
       </button>
     );
