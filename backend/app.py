@@ -542,13 +542,12 @@ def edit_instruction(instruction_id):
     new_instruction = {
         'content': data['content'],  # Save content as bytes
         'description': data['description'],
-        'deployed': True,
-        'has_been_deployed': True,
+        'deployed': False,
+        'has_been_deployed': False,
         'deploy_time': datetime.utcnow(),  # Initially None
         'last_edit': datetime.utcnow(),
     }
     collection.insert_one(new_instruction)
-    deploy_instruction(new_instruction['_id'])
     return jsonify({'message': 'Instruction updated successfully'})
 
 @app.route('/api/instruction/deploy/<instruction_id>', methods=['POST'])

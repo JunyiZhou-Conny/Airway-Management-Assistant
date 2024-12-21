@@ -84,7 +84,7 @@ textarea {
 }
 
 .deployed-table {
-    background-color: #e0f7fa; /* Light blue background for deployed table */
+    background-color: #0d383e; /* Light blue background for deployed table */
     margin-bottom: 20px;
     border: 1px solid #00acc1;
 }
@@ -118,4 +118,12 @@ table tr:nth-child(even) {
 
 .highlight-row {
     background-color: #e7ffd3 !important; /* Ensure this takes priority */
+}
+
+.deployed-heading {
+    color: white;
+}
+
+.undeployed-heading {
+    color: white;
 }
