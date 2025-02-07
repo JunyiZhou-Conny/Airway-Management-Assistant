@@ -193,9 +193,6 @@ export default function ChatHistory() {
                             ))}
                         </div>
                     ) : null}
-                    <div className="bottom-delete-container">
-                        <button className="delete-button" onClick={() => handleDeleteConversation(participantID)}>Delete</button>
-                    </div>
                 </div>
             )}
         </div>
