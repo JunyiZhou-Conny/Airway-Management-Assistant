@@ -244,37 +244,43 @@ const handleSubmit = (e) => {
 
 
   
-  const processMessage = ( messageText ) => {
-        // Format the message text with newlines and bold
-        messageText = formatMessage(messageText);
-        console.log(messageText)
-        const botMessage = { id: Date.now(), text: messageText, sender: 'bot', type: 'text' };
+const processMessage = (messageText) => {
+    let formattedMessage = formatMessage(messageText);
+    console.log(formattedMessage);
+    
+    // Create a regex to detect related/instruction image messages
+    const imageRegex = /(related|instruction) image found, image id is (\d+)/i;
+    const imageMatch = formattedMessage.match(imageRegex);
+    if (imageMatch) {
+        console.log("Image search requested");
+        const imageId = imageMatch[2];
+        fetchImage(imageId);
+        // Replace only the matched substring with "see image below"
+        formattedMessage = formattedMessage.replace(imageRegex, "see image below");
+        // Update the last bot message with the revised text
+        setMessages(prevMessages => {
+            const lastIndex = prevMessages.length - 1;
+            if (prevMessages[lastIndex]?.sender === 'bot') {
+                const updatedMessages = [...prevMessages];
+                updatedMessages[lastIndex].text = formattedMessage;
+                return updatedMessages;
+            }
+            return prevMessages;
+        });
+        return;
+    }
 
-        const match = messageText.toLowerCase().match(/related image found, image id is (\d+)/);
-        const instruction_match = messageText.toLowerCase().match(/instruction image found, image id is (\d+)/);
-        const knowledge_match = messageText.toLowerCase().match(/external knowledge detected, the term is (.*)/);
-        if (match) {
-            console.log("User image search requested")
-            const imageId = match[1]; // Extract the ID from the message
-            fetchImage(imageId); // Call fetchImage with the extracted ID
-        } else if (instruction_match) {
-            console.log("Bot instruction image search requested")
-            // setMessages(prevMessages => [...prevMessages, botMessage]);
-            const imageId = instruction_match[1];
-            fetchImage(imageId);
-        }  
-
-        if (knowledge_match) {
-            console.log("knowledge base query requested, matched knowledge", knowledge_match[1])
-            const overview = knowledge_match[1];
-            deleteLastMessage();
-            fetchKnowledge(overview);
-        }else {
-            console.log("Normal Response")
-            // If no specific pattern is detected, just add the message as usual
-        }
-        
-    };
+    const knowledge_match = formattedMessage.toLowerCase().match(/external knowledge detected, the term is (.*)/);
+    if (knowledge_match) {
+        console.log("knowledge base query requested, matched knowledge", knowledge_match[1]);
+        deleteLastMessage();
+        fetchKnowledge(knowledge_match[1]);
+        return;
+    }
+    
+    console.log("Normal Response");
+    // ...existing code for normal responses if needed...
+};
 
   
   const initializeChat = () => {
