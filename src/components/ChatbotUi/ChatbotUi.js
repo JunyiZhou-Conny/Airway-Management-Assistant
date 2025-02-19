@@ -256,7 +256,7 @@ const processMessage = (messageText) => {
         const imageId = imageMatch[2];
         fetchImage(imageId);
         // Replace only the matched substring with "see image below"
-        formattedMessage = formattedMessage.replace(imageRegex, "see image below");
+        formattedMessage = formattedMessage.replace(imageRegex, "");
         // Update the last bot message with the revised text
         setMessages(prevMessages => {
             const lastIndex = prevMessages.length - 1;
