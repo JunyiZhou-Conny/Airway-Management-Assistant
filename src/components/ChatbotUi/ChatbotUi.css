@@ -1,130 +1,109 @@
-/* Chat window styling */
-  .chat-window {
-    flex-grow: 1;
-    padding: 30px;
-    overflow-y: auto;
-    height: calc(100vh - 170px);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background-color: #355997;
-    white-space: pre-wrap; /* Preserves whitespace and wraps text */
-    word-wrap: break-word; /* Prevents long text strings from overflowing */
-  }
 
-  .chat-input {
-    display: flex;
-    align-items: center;
-    border-left: 0px;
-    flex-grow: 1;
-    padding: 10px;
-    border-top-left-radius: 20px; /* Only the top-left corner will be rounded */
-    border-bottom-left-radius: 20px; /* Only the bottom-left corner will be rounded */
-    margin-left: 40px;
-    margin-right: 30px;
-    background-color: #26292f; /* The dark blue background */
-    color: rgb(213, 204, 204); /* Text color */
-    overflow-y: auto; /* Scrollable vertically */
-    resize: none; /* Disable resizing */
-    max-height: 200px; /* Maximum height */
-    line-height: 1.5; /* Line height for readability */
-    box-sizing: border-box; /* Padding included in the width and height */
-    font-weight: 550;
-    font-family: Nunito; 
-    font-size: 16px;
-  }
-
-  .loading-bar {
-    height: 20px;
-    background-color: #ccc;
-    width: 100%;
-    text-align: center;
-    padding: 10px;
-    font-size: 16px;
-    color: #333;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 
-  .chat-input-button {
-    padding: 20px 20px;
-    background-color: #f2ecec !important; 
-    color: black; /* Text color */
-    border: none; /* Removes the border */
-    border-top-right-radius: 20px; /* Only the top-right corner will be rounded */
-    border-bottom-right-radius: 20px; /* Only the bottom-right corner will be rounded */
-    cursor: pointer; /* Indicates it's clickable */
-    margin-right: 10px;
-    font-family: Nunito;
-    font-weight: 550;
-    font-size:20px;
-  }
-  
-  .chat-input-button:hover {
-    background-color: #e4c2d2; /* Lighter pink color on hover */
-  }
-  
-  .reset-button {
-    background-color: rgb(242, 110, 172);
-    margin-left: 10px; /* Adjust spacing as needed */
-}
-.save-conversation-button {
-  background-color: rgb(199, 175, 186);
-  margin-left: 10px; /* Adjust spacing as needed */
-}
-  
-@keyframes dots {
-  0%, 20% {
-      color: white;
-      font-size: 30px;
-  }
-  40% {
-      color: grey;
-      font-size: 30px;
-  }
-  60% {
-      color: grey;
-      font-size: 30px;
-  }
-  80%, 100% {
-      color: white;
-      font-size: 30px;
-  }
+.chat-window {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #355997;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  padding-bottom: 60px;
+  margin-right: 0;
+  width:auto; 
 }
 
-.loading-message {
-  font-size: 20px;
-  color: white;
-  font-family: Nunito;
-  text-align: left;
-}
-
-.loading-message::after {
-  content: '...';
-  animation: dots 1.5s infinite;
-  width: 1ch;
-}
-
-button {
-  font-family: 'Nunito', sans-serif; /* Add fallback font */
-}
-
-.user-input{
-  margin-left: 10px;
-  padding-left: 10px;
-  background-color: rgb(213, 204, 204);
-}
 
 .chat-bot-form {
   background-color: transparent;
-  position: relative;
-  bottom: 0;        /* Aligns the element at the bottom of the page */
-  left: 0;          /* Aligns the element to the left */
-  transform: translateY(80px);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: 50px;
+  z-index: 1000;
+  width: 100%;
+  padding-left: 280px;
 }
 
-.chat-image {
-  max-width: 100%; /* Makes sure the image width doesn't exceed the message container width */
-  height: auto; /* Maintains the aspect ratio of the image */
-  object-fit: cover; /* Ensures the image fills its box, covering it entirely */
-  border-radius: 10px; /* Optional: Add some rounding for visual consistency */
+
+.user-input {
+  flex: 1;
+  height: 35px;
+  margin: 0 10px;
+  border-radius: 20px;
+  padding: 0 15px;
+  background-color: rgb(213, 204, 204);
+  border: none;
+  font-family: 'Nunito', sans-serif; 
+  font-size: 14px;
+  font-weight: normal;
 }
+
+.reset-button, 
+.save-conversation-button, 
+button[type="submit"],
+button {
+  padding: 0 15px;
+  height: 35px;
+  margin: 0 5px;
+  border-radius: 20px;
+  border: none;
+  font-family: 'Nunito', sans-serif; 
+  font-size: 14px;
+  font-weight: normal; 
+}
+
+.reset-button {
+  background-color: rgb(242, 110, 172) !important;
+  color: white;
+}
+
+.save-conversation-button {
+  background-color: rgb(199, 175, 186) !important;
+  color: white;
+}
+
+button[type="submit"], .send-button {
+  background-color: #f2ecec !important;
+  color: black;
+}
+
+/* 媒体查询优化 */
+@media (max-width: 1200px) {
+  .chat-bot-form {
+    width: calc(100% - 220px);
+    margin-left: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chat-bot-form {
+    width: calc(100% - 200px);
+    margin-left: 200px;
+    padding: 3px 0;
+  }
+  
+  .user-input {
+    margin: 0 5px;
+    font-size: 13px;
+  }
+  
+  .reset-button, .save-conversation-button, button {
+    padding: 0 10px;
+    font-size: 13px;
+  }
+} 
