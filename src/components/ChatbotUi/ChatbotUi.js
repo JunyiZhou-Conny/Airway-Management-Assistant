@@ -249,14 +249,14 @@ const processMessage = (messageText) => {
     console.log(formattedMessage);
     
     // Create a regex to detect related/instruction image messages
-    const imageRegex = /(related|instruction) image found, image id is (\d+)/i;
+    const imageRegex = /(related|instruction) image found, image id is (\d+)\.?/i;
     const imageMatch = formattedMessage.match(imageRegex);
     if (imageMatch) {
         console.log("Image search requested");
         const imageId = imageMatch[2];
         fetchImage(imageId);
-        // Replace only the matched substring with "see image below"
-        formattedMessage = formattedMessage.replace(imageRegex, "");
+        // replace the entire line of the image message with blank
+        formattedMessage = formattedMessage.replace(imageRegex, '');
         // Update the last bot message with the revised text
         setMessages(prevMessages => {
             const lastIndex = prevMessages.length - 1;
