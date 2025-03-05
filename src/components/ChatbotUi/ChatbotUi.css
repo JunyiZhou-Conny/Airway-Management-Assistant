@@ -53,7 +53,7 @@ html, body {
   font-weight: normal;
 }
 
-.reset-button, 
+/* .reset-button, 
 .save-conversation-button, 
 button[type="submit"],
 button {
@@ -65,24 +65,65 @@ button {
   font-family: 'Nunito', sans-serif; 
   font-size: 14px;
   font-weight: normal; 
-}
+} */
 
-.reset-button {
+button[type ="submit"],.reset-button {
   background-color: rgb(242, 110, 172) !important;
   color: white;
+  padding: 0 15px;
+  height: 35px;
+  margin: 0 5px;
+  border-radius: 20px;
+  border: none;
+  font-family: 'Nunito', sans-serif; 
+  font-size: 14px;
+  font-weight: normal;
+  cursor: pointer
 }
 
-.save-conversation-button {
+button[type="submit"]:hover, .reset-button:hover {
+  background-color: rgb(255, 130, 192) !important;
+  transform: scale(1.05);
+}
+
+button[type ="submit"],.save-conversation-button {
   background-color: rgb(199, 175, 186) !important;
   color: white;
+  padding: 0 15px;
+  height: 35px;
+  margin: 0 5px;
+  border-radius: 20px;
+  border: none;
+  font-family: 'Nunito', sans-serif; 
+  font-size: 14px;
+  font-weight: normal;
+  cursor: pointer;
 }
 
-button[type="submit"], .send-button {
+button[type="submit"]:hover, .save-conversation-button:hover {
+  background-color: rgb(219, 195, 206) !important;
+  transform: scale(1.05);
+}
+
+button[type ="submit"],.send-button {
   background-color: #f2ecec !important;
   color: black;
+  padding: 0 15px;
+  height: 35px;
+  margin: 0 5px;
+  border-radius: 20px;
+  border: none;
+  font-family: 'Nunito', sans-serif; 
+  font-size: 14px;
+  font-weight: normal;
+  cursor: pointer;
 }
 
-/* 媒体查询优化 */
+button[type="submit"]:hover, .send-button:hover {
+  background-color: #ffffff !important;
+  transform: scale(1.05);
+}
+
 @media (max-width: 1200px) {
   .chat-bot-form {
     width: calc(100% - 220px);
@@ -102,7 +143,7 @@ button[type="submit"], .send-button {
     font-size: 13px;
   }
   
-  .reset-button, .save-conversation-button, button {
+  .reset-button, .save-conversation-button, .send-button {
     padding: 0 10px;
     font-size: 13px;
   }
