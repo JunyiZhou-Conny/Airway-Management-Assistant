@@ -5,15 +5,21 @@ import UnauthApp from './components/UnauthApp';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Puff } from 'react-loader-spinner';
 import './styles.css';
+import ChatHistory from './components/ChatHistoryPage/ChatHistory';
+import ParticipantIDPopup from './components/ParticipantIDPopup/ParticipantIDPopup'; // Import the ParticipantIDPopup component
 
 const App = () => {
   const [activeInterface, setActiveInterface] = useState(null);
-  const { isAuthenticated, user, isLoading, loginWithRedirect, logout } = useAuth0();
+  const { isAuthenticated, user, isLoading } = useAuth0();
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [chatbotLoaded, setChatbotLoaded] = useState(false);
   const [showParticipantIDPopup, setShowParticipantIDPopup] = useState(false);
-  const [participantID, setParticipantID] = useState('');
+
+  // Initialize participantID from sessionStorage
+  const [participantID, setParticipantID] = useState(() => {
+    return sessionStorage.getItem('participantID') || '';
+  });
 
   useEffect(() => {
     const roles = user?.[`https://your_domain/roles`] || [];
@@ -49,7 +55,17 @@ const App = () => {
         console.log('Page was closed and reopened');
       }
     }
-  }, []); // Added missing closing bracket here
+  }, []);
+
+  // Persist participantID changes and resume conversation if it exists
+  useEffect(() => {
+    if (participantID) {
+      sessionStorage.setItem('participantID', participantID);
+      // Example: Fetch conversation history or resume state
+      console.log(`Resuming conversation for participant ID: ${participantID}`);
+      // fetchChatHistory(participantID); // Uncomment and implement this if needed
+    }
+  }, [participantID]);
 
   if (isLoading) {
     return (
@@ -62,20 +78,29 @@ const App = () => {
   return (
     <Router>
       {isAuthenticated ? (
-        <AuthenticatedApp
-          user={user}
-          isUserAdmin={isUserAdmin}
-          chatbotLoaded={chatbotLoaded}
-          activeInterface={activeInterface}
-          setActiveInterface={setActiveInterface}
-          showParticipantIDPopup={showParticipantIDPopup}
-          setShowParticipantIDPopup={setShowParticipantIDPopup}
-          isProfileModalVisible={isProfileModalVisible}
-          setIsProfileModalVisible={setIsProfileModalVisible}
-          setParticipantID={setParticipantID}
-          setChatbotLoaded={setChatbotLoaded}
-          participantID={participantID}
-        />
+        participantID ? ( // Check if participantID exists
+          <AuthenticatedApp
+            user={user}
+            isUserAdmin={isUserAdmin}
+            chatbotLoaded={chatbotLoaded}
+            activeInterface={activeInterface}
+            setActiveInterface={setActiveInterface}
+            showParticipantIDPopup={showParticipantIDPopup}
+            setShowParticipantIDPopup={setShowParticipantIDPopup}
+            isProfileModalVisible={isProfileModalVisible}
+            setIsProfileModalVisible={setIsProfileModalVisible}
+            setParticipantID={setParticipantID}
+            setChatbotLoaded={setChatbotLoaded}
+            participantID={participantID}
+          />
+        ) : (
+          <ParticipantIDPopup
+            onSubmit={(id) => {
+              setParticipantID(id); // Save participantID to state
+              setShowParticipantIDPopup(false); // Close the popup
+            }}
+          />
+        )
       ) : (
         <UnauthApp />
       )}
