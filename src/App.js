@@ -10,7 +10,7 @@ import ParticipantIDPopup from './components/ParticipantIDPopup/ParticipantIDPop
 
 const App = () => {
   const [activeInterface, setActiveInterface] = useState(null);
-  const { isAuthenticated, user, isLoading } = useAuth0();
+  const { isAuthenticated, user, isLoading, loginWithRedirect, logout } = useAuth0();
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [chatbotLoaded, setChatbotLoaded] = useState(false);

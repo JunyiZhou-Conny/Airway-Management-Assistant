@@ -57,6 +57,7 @@ export default function ChatbotUi({isUserAdmin}){
             const newID = window.prompt("Please enter the new participant ID:");
             if (newID) {
                 setParticipantID(newID);
+                sessionStorage.setItem('participantID', newID); // Save the new participant ID to sessionStorage
                 // Send the new participant ID to the backend
                 fetch(`${process.env.REACT_APP_BACKEND_URL}/set-participant-id`, {
                     method: 'POST',
@@ -68,12 +69,12 @@ export default function ChatbotUi({isUserAdmin}){
                 .then(response => response.json())
                 .then(data => {
                     console.log('Participant ID set:', data);
-                    handleResetConversation();
+                    handleResetConversation(); // Reset the conversation after setting the new ID
                 })
                 .catch(error => console.error('Error setting participant ID:', error));
             }
         } else {
-            handleResetConversation();
+            handleResetConversation(); // Reset the conversation without changing the participant ID
         }
     };
 
